@@ -1,4 +1,4 @@
-# HTTP Request Smuggling CTF Lab
+# HTTP Request Smuggling CTF Lab Part 1 (CL.TE Exploitation)
 
 This is a Capture The Flag (CTF) lab environment focused on HTTP Request Smuggling vulnerabilities. The lab consists of a frontend application and a vulnerable backend service that can be used to practice and learn about HTTP Request Smuggling techniques.
 
