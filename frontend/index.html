@@ -96,7 +96,7 @@
         
         <div class="scenario">
             <h2>🎯 Objective:</h2>
-            <p>Exploit an HTTP Request Smuggling vulnerability to access the admin endpoint and retrieve the flag.</p>
+            <p>Exploit an HTTP Request Smuggling vulnerability (specifically CL.TE exploit) to access the admin endpoint and retrieve the flag.</p>
         </div>
 
         <div class="success">
@@ -153,7 +153,7 @@ X-Admin-Access: true<br>
             <ul>
                 <li>Make sure to include the <code>Connection: close</code> header</li>
                 <li>The <code>Content-Length</code> should match the length of the chunked data (just the "0\r\n\r\n")</li>
-                <li>The smuggled request should include both <code>X-Forwarded-For</code> and <code>X-Admin-Access</code> headers</li>
+                <li>The smuggled request should include both <code>X-Forwarded-For</code> set to <code>172.18.0.3</code> and <code>X-Admin-Access</code> headers</li>
                 <li>If you're not seeing the flag, try adjusting the <code>Content-Length</code> value</li>
             </ul>
         </details>
