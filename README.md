@@ -23,8 +23,7 @@ http-smuggling-ctf/
    ```bash
    docker-compose up --build
    ```
-3. Access the frontend at `http://localhost:3000`
-4. The backend service will be running at `http://localhost:8080`
+3. Access the frontend at `http://localhost/` or `http://<ip_of_machine>/`
 
 ## Security Notice
 
